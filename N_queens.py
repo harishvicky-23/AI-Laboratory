@@ -129,7 +129,7 @@ def main():
             solution = random.choice(solutions)
         else:
             solution = solutions[0]
-        visualize_board(solution, board_size, num_queens,queen_icon_path)
+        visualize_board(solution, board_size, num_queens)
     else:
         st.error("No valid configuration found for the selected inputs.")
 
