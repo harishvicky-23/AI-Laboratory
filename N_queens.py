@@ -5,6 +5,7 @@ import random
 import matplotlib.patches as patches
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.image as mpimg
+import os
 
 # ---------------------------------------------
 # N-Queens Solver
@@ -128,7 +129,7 @@ def main():
             solution = random.choice(solutions)
         else:
             solution = solutions[0]
-        visualize_board(solution, board_size, num_queens,queen_icon_path='/assets/queen.png')
+        visualize_board(solution, board_size, num_queens,queen_icon_path)
     else:
         st.error("No valid configuration found for the selected inputs.")
 
