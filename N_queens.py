@@ -2,6 +2,9 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import matplotlib.patches as patches
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import matplotlib.image as mpimg
 
 # ---------------------------------------------
 # N-Queens Solver
@@ -39,27 +42,56 @@ def solve_n_queens(board_size, num_queens):
 # ---------------------------------------------
 # Visualization Function
 # ---------------------------------------------
-def visualize_board(solution, board_size, num_queens):
+
+
+def visualize_board(solution, board_size, num_queens, queen_icon_path=None):
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_xlim(-0.5, board_size - 0.5)
     ax.set_ylim(-0.5, board_size - 0.5)
     ax.set_xticks([])
     ax.set_yticks([])
+    ax.set_aspect('equal')
     ax.invert_yaxis()
 
-    # Draw chessboard
+    # Board colors (like chess.com)
+    light_color = "#EEEED2"
+    dark_color = "#769656"
+
     for i in range(board_size):
         for j in range(board_size):
-            color = "#f0d9b5" if (i + j) % 2 == 0 else "#b58863"  # light/dark wood tones
-            rect = plt.Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor=color, edgecolor='black')
-            ax.add_patch(rect)
+            color = light_color if (i + j) % 2 == 0 else dark_color
+            square = patches.Rectangle(
+                (j - 0.5, i - 0.5),
+                1, 1,
+                facecolor=color,
+                edgecolor='black',
+                linewidth=0.5
+            )
+            ax.add_patch(square)
 
-    # Place queens (♛ symbol centered perfectly)
+    # Place queens
     for row, col in solution:
-        ax.text(col, row, '♛', ha='center', va='center', fontsize=500/board_size, color='crimson')
+        if queen_icon_path:
+            try:
+                img = mpimg.imread(queen_icon_path)
+                imagebox = OffsetImage(img, zoom=0.08 * (8 / board_size))
+                ab = AnnotationBbox(imagebox, (col, row), frameon=False)
+                ax.add_artist(ab)
+            except Exception as e:
+                st.warning(f"⚠️ Could not load queen icon: {e}")
+                ax.text(col, row, '♛', ha='center', va='center',
+                        fontsize=400/board_size,
+                        color='black' if (row+col)%2==0 else 'white')
+        else:
+            ax.text(col, row, '♛', ha='center', va='center',
+                    fontsize=400/board_size,
+                    color='black' if (row+col)%2==0 else 'white')
 
-    plt.title(f"{num_queens}-Queens on {board_size}×{board_size} Board", fontsize=14, fontweight='bold')
-    st.pyplot(fig)
+    plt.title(f"{num_queens}-Queens on {board_size}×{board_size} Board",
+              fontsize=16, fontweight='bold', pad=15)
+
+    st.pyplot(fig, clear_figure=True)
+
 
 
 # ---------------------------------------------
@@ -79,7 +111,7 @@ def main():
 
     with st.sidebar:
         st.header("⚙️ Configuration")
-        board_size = st.slider("Board Size (N × N)", 4, 12, 8)
+        board_size = st.slider("Board Size (N × N)", 3, 8, 4)
         num_queens = st.slider("Number of Queens", 1, board_size, min(8, board_size))
         randomize = st.checkbox("Show random valid solution", value=True)
 
