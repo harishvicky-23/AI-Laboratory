@@ -152,7 +152,7 @@ def plot_graph(path=None, title="Search Graph"):
 
 def main():
     st.set_page_config(page_title="ChatSearchBot 3.0", page_icon="🤖", layout="centered")
-    st.title("🤖 ChatSearchBot 3.0 — Intelligent Pathfinder 🌍")
+    st.title("🤖 ChatSearchBot — Intelligent Pathfinder 🌍")
     st.markdown("### Choose start, goal and algorithm — visualize the shortest path live!")
 
     with st.sidebar:
